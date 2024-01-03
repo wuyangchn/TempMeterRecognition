@@ -36,7 +36,9 @@ def get_template(template_img_dir="", resize=True, show_img=False):
 
         if resize:
             # 更改图尺寸
-            # src_img = src_img[5:35, 120:180]
+            # print(src_img.shape)
+            if src_img.shape[1] > 180:
+                src_img = src_img[5:35, 120:180]
             src_img = cv_resize(src_img, 30 * 10, 60 * 10)
 
         hsv_img = cv.cvtColor(src_img, cv.COLOR_BGR2HSV)
@@ -97,7 +99,7 @@ def get_template(template_img_dir="", resize=True, show_img=False):
 
 
 if __name__ == "__main__":
-    from global_settings import TEMPLATE2_DIR, TEMPLATE2_RESULTS_PATH
-    digits_temp = get_template(template_img_dir=TEMPLATE2_DIR, resize=True, show_img=True)
-    with open(TEMPLATE2_RESULTS_PATH, "w") as f:
+    from global_settings import TEMPLATE2_DIR, TEMPLATE2_RESULTS_PATH, TEMPLATE_DIR, TEMPLATE_RESULTS_PATH
+    digits_temp = get_template(template_img_dir=TEMPLATE_DIR, resize=True, show_img=True)
+    with open(TEMPLATE_RESULTS_PATH, "w") as f:
         f.writelines(json.dumps(digits_temp))

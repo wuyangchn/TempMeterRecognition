@@ -18,7 +18,7 @@ from global_settings import os, datetime, CAMERA_DIR, TXT_PATH, SAVE_DIR, TEMPLA
 from basic_funcs import cv, np, bounding_rect, cv_show, cv_resize, write
 
 
-def get_matched_results(src_img_path, resize=True, show_img=False):
+def get_matched_results(src_img_path, temp_file=TEMPLATE_RESULTS_PATH, resize=True, show_img=False):
     """
     :param src_img_path:
     :param resize:
@@ -63,7 +63,7 @@ def get_matched_results(src_img_path, resize=True, show_img=False):
 
     output = []
     # 遍历每一个轮廓中的数字
-    with open(TEMPLATE_RESULTS_PATH, "r") as f:
+    with open(temp_file, "r") as f:
         digits = json.loads(f.read())
     for (i, (gX, gY, gW, gH)) in enumerate(locs):
         # initialize the list of group digits
@@ -260,7 +260,7 @@ def capture(camera_index=1, do_ocr=True):
     cv.destroyAllWindows()
 
 
-def _ocr_dir(img_dir, results_path="", show_img=False, save_results=True):
+def _ocr_dir(img_dir, results_path="", temp_file=TEMPLATE_RESULTS_PATH, show_img=False, save_results=True):
     filenames = next(os.walk(img_dir), (None, None, []))[2]  # [] if no file
     for each in filenames:
 
@@ -268,7 +268,8 @@ def _ocr_dir(img_dir, results_path="", show_img=False, save_results=True):
         dt[4] = str(int(dt[4]) - 1 if int(dt[4]) > 0 else dt[4])
         dt[4] = "0" + dt[4] if len(dt[4]) == 1 else dt[4]
 
-        temp, inrange_frame = get_matched_results(os.path.join(img_dir, each), resize=True, show_img=show_img)
+        temp, inrange_frame = get_matched_results(
+            os.path.join(img_dir, each), temp_file=temp_file, resize=True, show_img=show_img)
         text = "{0}{1}-{2}-{3}T{4}:{5}:{6}Z;{7};".format(*dt, temp)
         print(text)
         if save_results and os.path.exists(results_path):
@@ -282,5 +283,7 @@ if __name__ == "__main__":
     img_dir = r"D:\Saved Pictures\2024-01-02"
     results_path = r"D:\Saved Pictures\inside_temperature.txt"
 
-    _ocr_dir(img_dir, results_path, show_img=False, save_results=True)
+    temp_path = r"D:\PythonProjects\TempMeterRecognition\statics\Template 2\template.txt"
+
+    _ocr_dir(img_dir, results_path, temp_file=temp_path, show_img=False, save_results=True)
 

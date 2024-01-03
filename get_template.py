@@ -11,10 +11,11 @@
 """
 import json
 import os
+import re
 
 from imutils import contours as cnt
 
-from .basic_funcs import cv_resize, bounding_rect, cv_show, cv, np, write
+from basic_funcs import cv_resize, bounding_rect, cv_show, cv, np, write
 
 
 def get_template(template_img_dir="", resize=True, show_img=False):
@@ -24,9 +25,14 @@ def get_template(template_img_dir="", resize=True, show_img=False):
 
     digits = {}
 
-    for each_img_lable in range(10):
+    for each_img_lable in next(os.walk(template_img_dir), (None, None, []))[2]:  # [] if no file
 
-        src_img = cv.imread(os.path.join(template_img_dir, f"{each_img_lable}.jpg"))
+        if not each_img_lable.endswith(".jpg"):
+            continue
+
+        number = re.findall(r"\d+", each_img_lable)[0]
+
+        src_img = cv.imread(os.path.join(template_img_dir, each_img_lable))
 
         if resize:
             # 更改图尺寸
@@ -91,7 +97,7 @@ def get_template(template_img_dir="", resize=True, show_img=False):
 
 
 if __name__ == "__main__":
-    from TempMeterRecognition.global_settings import TEMPLATE_DIR, TEMPLATE_RESULTS_PATH
+    from global_settings import TEMPLATE_DIR, TEMPLATE_RESULTS_PATH
     digits_temp = get_template(template_img_dir=TEMPLATE_DIR, resize=True, show_img=True)
     with open(TEMPLATE_RESULTS_PATH, "w") as f:
         f.writelines(json.dumps(digits_temp))

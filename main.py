@@ -14,8 +14,8 @@ import shutil
 import json
 from imutils import contours as cnt
 
-from .global_settings import os, datetime, CAMERA_DIR, TXT_PATH, SAVE_DIR, TEMPLATE_RESULTS_PATH
-from .basic_funcs import cv, np, bounding_rect, cv_show, cv_resize, write
+from global_settings import os, datetime, CAMERA_DIR, TXT_PATH, SAVE_DIR, TEMPLATE_RESULTS_PATH
+from basic_funcs import cv, np, bounding_rect, cv_show, cv_resize, write
 
 
 def get_matched_results(src_img_path, resize=True, show_img=False):
@@ -87,15 +87,18 @@ def get_matched_results(src_img_path, resize=True, show_img=False):
 
             # 计算匹配得分
             scores = []
+            index = []
 
             # 在模板中计算每一个得分
             for (digit, digitROI) in digits.items():
+                digit = re.findall(r"\d+", digit)[0]
                 # 模板匹配
                 result = cv.matchTemplate(roi, np.array(digitROI, dtype=roi.dtype), cv.TM_CCOEFF)
                 (_, score, _, _) = cv.minMaxLoc(result)
                 scores.append(score)
+                index.append(digit)
             # 得到最合适的数字
-            groupOutput.append(str(np.argmax(scores)))
+            groupOutput.append(str(index[np.argmax(scores)]))
         output.append("".join(groupOutput))
 
     while show_img:
@@ -257,5 +260,27 @@ def capture(camera_index=1, do_ocr=True):
     cv.destroyAllWindows()
 
 
+def _ocr_dir(img_dir, results_path="", show_img=False, save_results=True):
+    filenames = next(os.walk(img_dir), (None, None, []))[2]  # [] if no file
+    for each in filenames:
+
+        dt = re.findall(r"\d{2}", each)
+        dt[4] = str(int(dt[4]) - 1 if int(dt[4]) > 0 else dt[4])
+        dt[4] = "0" + dt[4] if len(dt[4]) == 1 else dt[4]
+
+        temp, inrange_frame = get_matched_results(os.path.join(img_dir, each), resize=True, show_img=show_img)
+        text = "{0}{1}-{2}-{3}T{4}:{5}:{6}Z;{7};".format(*dt, temp)
+        print(text)
+        if save_results and os.path.exists(results_path):
+            write(results_path, f"{text}\n")
+
+
 if __name__ == "__main__":
-    capture(camera_index=1)
+    # capture(camera_index=1)
+    # img_dir = r"D:\PythonProjects\TempMeterRecognition\statics\Test"
+    # results_path = r"D:\PythonProjects\TempMeterRecognition\inside_temperature - Copy.txt"
+    img_dir = r"D:\Saved Pictures\2024-01-02"
+    results_path = r"D:\Saved Pictures\inside_temperature.txt"
+
+    _ocr_dir(img_dir, results_path, show_img=False, save_results=True)
+

@@ -19,7 +19,7 @@ CAMERA_DIR = os.path.join(ROOT, r"statics\OpenCV Capture")
 SAVE_DIR = os.path.join(ROOT, r"statics\Saved Pictures")
 TEMPLATE_DIR = os.path.join(ROOT, r"statics\Template")
 
-TEMPLATE_RESULTS_PATH = os.path.join(ROOT, r"template.txt")
+TEMPLATE_RESULTS_PATH = os.path.join(ROOT, r"statics\Template\template.txt")
 TXT_PATH = os.path.join(ROOT, r"inside_temperature.txt")
 EXAMPLE_IMG_PATH = os.path.join(ROOT, r"statics\examples\WIN_20240102_20_47_26_Pro.jpg")
 

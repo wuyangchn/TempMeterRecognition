@@ -14,7 +14,7 @@ import os
 
 from imutils import contours as cnt
 
-from TempMeterRecognition.basic_funcs import cv_resize, bounding_rect, cv_show, cv, np, write
+from .basic_funcs import cv_resize, bounding_rect, cv_show, cv, np, write
 
 
 def get_template(template_img_dir="", resize=True, show_img=False):

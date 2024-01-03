@@ -9,8 +9,8 @@
 #
 # 
 """
-from TempMeterRecognition.global_settings import EXAMPLE_IMG_PATH
-from TempMeterRecognition.basic_funcs import cv_resize, cv_show, cv, np
+from .global_settings import EXAMPLE_IMG_PATH
+from .basic_funcs import cv_resize, cv_show, cv, np
 
 
 def find_color_range(example_img=""):

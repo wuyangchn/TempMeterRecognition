@@ -14,8 +14,8 @@ import shutil
 import json
 from imutils import contours as cnt
 
-from TempMeterRecognition.global_settings import os, datetime, CAMERA_DIR, TXT_PATH, SAVE_DIR, TEMPLATE_RESULTS_PATH
-from TempMeterRecognition.basic_funcs import cv, np, bounding_rect, cv_show, cv_resize, write
+from .global_settings import os, datetime, CAMERA_DIR, TXT_PATH, SAVE_DIR, TEMPLATE_RESULTS_PATH
+from .basic_funcs import cv, np, bounding_rect, cv_show, cv_resize, write
 
 
 def get_matched_results(src_img_path, resize=True, show_img=False):

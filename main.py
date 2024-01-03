@@ -282,12 +282,12 @@ if __name__ == "__main__":
     # img_dir = r"D:\PythonProjects\TempMeterRecognition\statics\Test"
     # results_path = r"D:\PythonProjects\TempMeterRecognition\inside_temperature - Copy.txt"
 
-    img_dir = r"D:\Saved Pictures\2024-01-02"
-    results_path = r"D:\Saved Pictures\inside_temperature.txt"
-
-    temp_path = r"D:\PythonProjects\TempMeterRecognition\statics\Template 2\template.txt"
-
-    _ocr_dir(img_dir, results_path, temp_file=temp_path, show_img=False, save_results=True)
+    # img_dir = r"D:\Saved Pictures\2024-01-02"
+    # results_path = r"D:\Saved Pictures\inside_temperature.txt"
+    #
+    # temp_path = r"D:\PythonProjects\TempMeterRecognition\statics\Template 2\template.txt"
+    #
+    # _ocr_dir(img_dir, results_path, temp_file=temp_path, show_img=False, save_results=True)
 
     get_matched_results(
         r"D:\PythonProjects\TempMeterRecognition\example.jpg", show_img=True, resize=True

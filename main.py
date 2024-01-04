@@ -217,26 +217,30 @@ def capture(camera_index=1, do_ocr=True):
         print("Cannot open camera")
         exit()
 
-    n = 1
+    n = 0
+    m = 0
     while True:
 
         ret, frame = cap.read()
 
-        if ret:
+        if ret and n % 200 == 0:
+            n = 0
+            m += 1
             # frame = frame[0:100, 1400:1700]
             temp, inrange_frame = get_matched_results(frame, resize=True, show_img=False)
-            cv.imshow('camera', inrange_frame)  # 生成摄像头窗口
+            # cv.imshow('camera', inrange_frame)  # 生成摄像头窗口
+            cv.imshow('camera', frame)  # 生成摄像头窗口
             # 获取当前时间
             now_time = datetime.datetime.now()
             filename = datetime.datetime.strftime(now_time, "WIN_%Y%m%d_%H_%M_%S_Pro.jpg")
             cv.imwrite(os.path.join(CAMERA_DIR, filename), frame)
-            print(f"{n = }, {filename = }")
+            print(f"{m = }, {filename = }")
 
             if do_ocr:
                 filenames = next(os.walk(CAMERA_DIR), (None, None, []))[2]  # [] if no file
                 for each in filenames:
                     dt = re.findall(r"\d{2}", each)
-                    dt[4] = str(int(dt[4]) - 1)
+                    dt[4] = str(int(dt[4]) - 1 if int(dt[4]) > 0 else "23")
                     dt[4] = "0" + dt[4] if len(dt[4]) == 1 else dt[4]
                     save_path = os.path.join(SAVE_DIR, f"{dt[0]}{dt[1]}-{dt[2]}-{dt[3]}")
                     if each.startswith("WIN_202") and each.endswith(".jpg") and not os.path.isfile(
@@ -253,8 +257,7 @@ def capture(camera_index=1, do_ocr=True):
                         print(text)
 
         n += 1
-
-        if cv.waitKey(5000) == ord('q'):
+        if cv.waitKey(1) == ord('q'):
             break
 
     cap.release()
@@ -266,7 +269,7 @@ def _ocr_dir(img_dir, results_path="", temp_file=TEMPLATE_RESULTS_PATH, show_img
     for each in filenames:
 
         dt = re.findall(r"\d{2}", each)
-        dt[4] = str(int(dt[4]) - 1 if int(dt[4]) > 0 else dt[4])
+        dt[4] = str(int(dt[4]) - 1 if int(dt[4]) > 0 else "23")
         dt[4] = "0" + dt[4] if len(dt[4]) == 1 else dt[4]
 
         temp, inrange_frame = get_matched_results(
@@ -278,17 +281,18 @@ def _ocr_dir(img_dir, results_path="", temp_file=TEMPLATE_RESULTS_PATH, show_img
 
 
 if __name__ == "__main__":
-    # capture(camera_index=1)
+    capture(camera_index=0, do_ocr=False)
     # img_dir = r"D:\PythonProjects\TempMeterRecognition\statics\Test"
     # results_path = r"D:\PythonProjects\TempMeterRecognition\inside_temperature - Copy.txt"
 
-    img_dir = r"D:\Saved Pictures\2024-01-02"
-    results_path = r"D:\Saved Pictures\inside_temperature.txt"
+    # img_dir = r"D:\Saved Pictures\2024-01-02"
+    # results_path = r"D:\Saved Pictures\inside_temperature.txt"
+    #
+    # temp_path = r"D:\PythonProjects\TempMeterRecognition\statics\Template\template.txt"
 
-    temp_path = r"D:\PythonProjects\TempMeterRecognition\statics\Template\template.txt"
-
-    _ocr_dir(img_dir, results_path, temp_file=temp_path, show_img=False, save_results=True)
+    # _ocr_dir(img_dir, results_path, temp_file=temp_path, show_img=False, save_results=True)
     #
     # get_matched_results(
     #     r"D:\PythonProjects\TempMeterRecognition\example.jpg", show_img=True, resize=True
     # )
+    pass
